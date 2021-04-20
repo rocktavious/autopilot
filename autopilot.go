@@ -52,6 +52,15 @@ func Setup() func() {
 	}
 }
 
+func RegisterEndpoint(endpoint string, fixture string) string {
+	Mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, Fixture(fixture))
+	})
+	return Server.URL + endpoint	
+}
+
 type RoundTripFunc func(req *http.Request) *http.Response
 
 func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
