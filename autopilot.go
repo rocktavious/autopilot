@@ -1,6 +1,7 @@
 package autopilot
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
