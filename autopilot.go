@@ -1,4 +1,4 @@
-package "autopilot"
+package autopilot
 
 import (
 	"fmt"
