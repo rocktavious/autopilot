@@ -1,13 +1,9 @@
 package autopilot
 
 import (
-	"fmt"
-	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"path/filepath"
-	"runtime"
 	"reflect"
 	"testing"
 )
