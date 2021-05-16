@@ -73,16 +73,16 @@ func FixtureResponse(fixture string) ResponseWriter {
 	return func(w http.ResponseWriter) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, autopilot.Fixture(fixture))
+		fmt.Fprint(w, Fixture(fixture))
 	}
 }
 
 func RegisterEndpoint(endpoint string, responseWriter ResponseWriter, requestValidation RequestValidation) string {
-	autopilot.Mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+	Mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
 		requestValidation(r)
 		responseWriter(w)
 	})
-	return autopilot.Server.URL + endpoint
+	return Server.URL + endpoint
 }
 
 type RoundTripFunc func(req *http.Request) *http.Response
