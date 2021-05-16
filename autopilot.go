@@ -53,13 +53,36 @@ func Setup() func() {
 	}
 }
 
-func RegisterEndpoint(endpoint string, fixture string) string {
-	Mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+type RequestValidation func(*http.Request)
+
+type ResponseWriter func(http.ResponseWriter)
+
+func SkipRequestValidation() RequestValidation {
+	return func(r *http.Request) {}
+}
+
+func EmptyResponse() ResponseWriter {
+	return func(w http.ResponseWriter) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, Fixture(fixture))
+		fmt.Fprint(w, "{}")
+	}
+}
+
+func FixtureResponse(fixture string) ResponseWriter {
+	return func(w http.ResponseWriter) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, autopilot.Fixture(fixture))
+	}
+}
+
+func RegisterEndpoint(endpoint string, responseWriter ResponseWriter, requestValidation RequestValidation) string {
+	autopilot.Mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+		requestValidation(r)
+		responseWriter(w)
 	})
-	return Server.URL + endpoint	
+	return autopilot.Server.URL + endpoint
 }
 
 type RoundTripFunc func(req *http.Request) *http.Response
@@ -109,7 +132,7 @@ func Assert(tb testing.TB, condition bool, msg string, v ...interface{}) {
 func Ok(tb testing.TB, err error) {
 	if err != nil {
 		tb.Helper()
-		tb.Fatalf("unexpected error: %s", err.Error())
+		tb.Fatalf("\n\tunexpected error: %s", err.Error())
 	}
 }
 
@@ -117,6 +140,6 @@ func Ok(tb testing.TB, err error) {
 func Equals(tb testing.TB, exp, act interface{}) {
 	if !reflect.DeepEqual(exp, act) {
 		tb.Helper()
-		tb.Fatalf("exp: %#v\n\n\tgot: %#v", exp, act)
+		tb.Fatalf("\n\texp: %#v\n\tgot: %#v", exp, act)
 	}
 }
