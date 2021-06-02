@@ -1,0 +1,21 @@
+---
+version: 1
+service:
+  name: web
+  tier: tier_2
+  owner: developers
+  language: 
+  aliases:
+  - k8s:web-default
+  tags:
+  - key: imported
+    value: kubectl-opslevel
+  - key: app
+    value: web
+  - key: version
+    value: '1.0'
+  repositories:
+  - name: rocktavious/autopilot
+    path: "/"
+    provider: github
+    display_name: Autopilot
