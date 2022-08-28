@@ -42,12 +42,14 @@ func TestExample(t *testing.T) {
 var (
 	Mux    *http.ServeMux
 	Server *httptest.Server
+	Templater *FixtureTemplater
 )
 
 // Setup an HttpTestServer and ServerMux (for path routing) and return the teardown function
 func Setup() func() {
 	Mux = http.NewServeMux()
 	Server = httptest.NewServer(Mux)
+	Templater = NewFixtureTemplater()
 	return func() {
 		Server.Close()
 	}
@@ -70,10 +72,11 @@ func EmptyResponse() ResponseWriter {
 }
 
 func FixtureResponse(fixture string) ResponseWriter {
+	response := TemplatedFixture(fixture)
 	return func(w http.ResponseWriter) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, Fixture(fixture))
+		fmt.Fprint(w, response)
 	}
 }
 
@@ -118,6 +121,14 @@ func Fixture(path string) string {
 		panic(err)
 	}
 	return string(b)
+}
+
+func TemplatedFixture(fixture string) string {
+	response, err := Templater.Use(Fixture(fixture))
+	if err != nil {
+		panic(err)
+	}
+	return response
 }
 
 // Assert fails the test if the condition is false.
