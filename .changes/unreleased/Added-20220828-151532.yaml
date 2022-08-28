@@ -1,4 +1,0 @@
-kind: Added
-body: Add a FixtureTemplater to allow for using go text templates with sprig in your
-  fixtures
-time: 2022-08-28T15:15:32.805957-05:00
