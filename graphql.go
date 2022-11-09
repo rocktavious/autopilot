@@ -12,6 +12,11 @@ type GraphqlQuery struct {
 	Variables map[string]interface{} `json:",omitempty"`
 }
 
+func ToJson(query GraphqlQuery) string {
+	bytes, _ := json.Marshal(query)
+	return string(bytes)
+}
+
 func Parse(r *http.Request) GraphqlQuery {
 	output := GraphqlQuery{}
 	defer r.Body.Close()
@@ -37,6 +42,6 @@ func GraphQLQueryFixture(fixture string) GraphqlQuery {
 
 func GraphQLQueryFixtureValidation(t *testing.T, fixture string) RequestValidation {
 	return func(r *http.Request) {
-		Equals(t, GraphQLQueryFixture(fixture), Parse(r))
+		Equals(t, ToJson(GraphQLQueryFixture(fixture)), ToJson(Parse(r)))
 	}
 }
