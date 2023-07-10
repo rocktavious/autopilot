@@ -2,7 +2,7 @@ package autopilot
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 )
@@ -20,7 +20,7 @@ func ToJson(query GraphqlQuery) string {
 func Parse(r *http.Request) GraphqlQuery {
 	output := GraphqlQuery{}
 	defer r.Body.Close()
-	bytes, err := ioutil.ReadAll(r.Body)
+	bytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return output
 	}
