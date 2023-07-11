@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/Masterminds/sprig/v3"
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/Masterminds/sprig/v3"
 )
 
 type FixtureTemplater struct {
@@ -73,7 +74,7 @@ func NewFixtureTemplater(templateDirs ...string) *FixtureTemplater {
 		}
 	}
 	var templateFiles []string
-	for k, _ := range files {
+	for k := range files {
 		templateFiles = append(templateFiles, k)
 	}
 	tmpl, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles(templateFiles...)

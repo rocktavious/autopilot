@@ -2,9 +2,9 @@ package autopilot
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -40,8 +40,8 @@ func TestExample(t *testing.T) {
 */
 
 var (
-	Mux    *http.ServeMux
-	Server *httptest.Server
+	Mux       *http.ServeMux
+	Server    *httptest.Server
 	Templater *FixtureTemplater
 )
 
@@ -100,13 +100,14 @@ func NewHttpClient(fn RoundTripFunc) *http.Client {
 		Transport: RoundTripFunc(fn),
 	}
 }
+
 /*
 client := autopilot.NewHttpClient(func(req *http.Request) *http.Response {
 	// Test request parameters
 	autopilot.Equals(t, req.URL.String(), "http://example.com/some/path")
 	return &http.Response{
 		StatusCode: 200,
-		Body: ioutil.NopCloser(bytes.NewBufferString(`OK`)),
+		Body: io.NopCloser(bytes.NewBufferString(`OK`)),
 		// Must be set to non-nil value or it panics
 		Header: make(http.Header),
 	}
@@ -116,7 +117,7 @@ api := API{client, "http://example.com"}
 
 // Load testdata/fixtures/<path> and return as string
 func Fixture(path string) string {
-	b, err := ioutil.ReadFile("testdata/fixtures/" + path)
+	b, err := os.ReadFile("testdata/fixtures/" + path)
 	if err != nil {
 		panic(err)
 	}
