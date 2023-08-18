@@ -2,6 +2,7 @@ package autopilot
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -24,7 +25,10 @@ func Parse(r *http.Request) GraphqlQuery {
 	if err != nil {
 		return output
 	}
-	json.Unmarshal(bytes, &output)
+	err = json.Unmarshal(bytes, &output)
+	if err != nil {
+		fmt.Printf("autopilot error: %s", err.Error())
+	}
 	return output
 }
 
@@ -36,7 +40,9 @@ func GraphQLQueryValidation(t *testing.T, exp string) RequestValidation {
 
 func GraphQLQueryFixture(fixture string) GraphqlQuery {
 	exp := GraphqlQuery{}
-	json.Unmarshal([]byte(TemplatedFixture(fixture)), &exp)
+	if err := json.Unmarshal([]byte(TemplatedFixture(fixture)), &exp); err != nil {
+		fmt.Printf("autopilot error: %s", err.Error())
+	}
 	return exp
 }
 
