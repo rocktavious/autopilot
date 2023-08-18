@@ -25,8 +25,7 @@ func Parse(r *http.Request) GraphqlQuery {
 	if err != nil {
 		return output
 	}
-	err = json.Unmarshal(bytes, &output)
-	if err != nil {
+	if err = json.Unmarshal(bytes, &output); err != nil {
 		fmt.Printf("autopilot error: %s", err.Error())
 	}
 	return output
