@@ -1,4 +1,4 @@
-module github.com/rocktavious/autopilot/v2022
+module github.com/rocktavious/autopilot/v2023
 
 go 1.20
 
