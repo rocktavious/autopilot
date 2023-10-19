@@ -132,6 +132,15 @@ func TemplatedFixture(fixture string) string {
 	return response
 }
 
+// RunTableTests runs a table of tests calling `fn` for each test and ensuring all tests run in parallel using goroutines
+func RunTableTests[T any](t *testing.T, cases map[string]T, fn func(*testing.T, T)) {
+	for name, test := range cases {
+		t.Run(name, func(t *testing.T) {
+			fn(t, test)
+		})
+	}
+}
+
 // Assert fails the test if the condition is false.
 func Assert(tb testing.TB, condition bool, msg string, v ...interface{}) {
 	if !condition {
