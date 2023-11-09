@@ -1,6 +1,7 @@
 package autopilot
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -163,4 +164,18 @@ func Equals(tb testing.TB, exp, act interface{}) {
 		tb.Helper()
 		tb.Fatalf("\n\texp: %#v\n\tgot: %#v", exp, act)
 	}
+}
+
+func Register[T any](name string, value T) T {
+	data, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+	_, err = Templater.coreTemplate.Parse(fmt.Sprintf(`{{ define "%s" }}
+%s
+{{ end }}`, name, data))
+	if err != nil {
+		panic(err)
+	}
+	return value
 }
