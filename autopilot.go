@@ -72,6 +72,17 @@ func EmptyResponse() ResponseWriter {
 	}
 }
 
+func JsonStringResponse(jsonString string) ResponseWriter {
+	if !json.Valid([]byte(jsonString)) {
+		panic(fmt.Errorf("invalid json passed to JsonStringResponse(): %s", jsonString))
+	}
+	return func(w http.ResponseWriter) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, jsonString)
+	}
+}
+
 func FixtureResponse(fixture string) ResponseWriter {
 	response := TemplatedFixture(fixture)
 	return func(w http.ResponseWriter) {
