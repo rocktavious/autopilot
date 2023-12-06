@@ -31,6 +31,12 @@ func Parse(r *http.Request) GraphqlQuery {
 	return output
 }
 
+func GraphQLQueryToJsonValidation(t *testing.T, request GraphqlQuery) RequestValidation {
+	return func(r *http.Request) {
+		Equals(t, ToJson(request), ToJson(Parse(r)))
+	}
+}
+
 func GraphQLQueryValidation(t *testing.T, exp string) RequestValidation {
 	return func(r *http.Request) {
 		Equals(t, exp, Parse(r).Query)
