@@ -2,6 +2,7 @@ package autopilot
 
 import (
 	"encoding/json"
+	"testing"
 )
 
 type TestRequest struct {
@@ -39,4 +40,12 @@ func templatedJson(values string) map[string]any {
 	}
 
 	return valuesJSON
+}
+
+func TestRequestResponse(testRequest TestRequest) ResponseWriter {
+	return JsonStringResponse(testRequest.ResponseAsString())
+}
+
+func TestRequestValidation(t *testing.T, request TestRequest) RequestValidation {
+	return GraphQLQueryToJsonValidation(t, request.Request)
 }
