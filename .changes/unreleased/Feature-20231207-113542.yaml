@@ -1,0 +1,3 @@
+kind: Feature
+body: add GraphqlQuery member func to get Variables as string
+time: 2023-12-07T11:35:42.684168-06:00

@@ -13,6 +13,14 @@ type GraphqlQuery struct {
 	Variables map[string]interface{} `json:",omitempty"`
 }
 
+func (t *GraphqlQuery) VariablesAsString() string {
+	marshalledVariables, err := json.Marshal(t.Variables)
+	if err != nil {
+		panic(err)
+	}
+	return string(marshalledVariables)
+}
+
 func ToJson(query GraphqlQuery) string {
 	bytes, _ := json.Marshal(query)
 	return string(bytes)
