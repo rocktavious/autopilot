@@ -2,6 +2,7 @@ package autopilot
 
 import (
 	"encoding/json"
+	"net/http"
 	"testing"
 )
 
@@ -48,4 +49,14 @@ func TestRequestResponse(testRequest TestRequest) ResponseWriter {
 
 func TestRequestValidation(t *testing.T, request TestRequest) RequestValidation {
 	return GraphQLQueryToJsonValidation(t, request.Request)
+}
+
+func RegisterPaginatedEndpoint(t *testing.T, url string, requests ...TestRequest) string {
+	requestCount := 0
+	Mux.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
+		GraphQLQueryToJsonValidation(t, requests[requestCount].Request)(r)
+		TestRequestResponse(requests[requestCount])(w)
+		requestCount += 1
+	})
+	return Server.URL + url
 }
