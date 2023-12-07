@@ -15,17 +15,24 @@ type FixtureTemplater struct {
 	coreTemplate *template.Template
 }
 
-func (t *FixtureTemplater) Use(contents string) (string, error) {
+func (t *FixtureTemplater) ParseToBytes(contents string) (*bytes.Buffer, error) {
 	clone, err := t.coreTemplate.Clone()
 	if err != nil {
-		return "", fmt.Errorf("error cloneing core template: %s", err)
+		return nil, fmt.Errorf("error cloning core template: %s", err)
 	}
 	target, err := clone.Parse(contents)
 	if err != nil {
-		return "", fmt.Errorf("error parsing template: %s", err)
+		return nil, fmt.Errorf("error parsing template: %s", err)
 	}
 	data := bytes.NewBuffer([]byte{})
-	err = target.Execute(data, nil)
+	if err = target.Execute(data, nil); err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (t *FixtureTemplater) Use(contents string) (string, error) {
+	data, err := t.ParseToBytes(contents)
 	if err != nil {
 		return "", err
 	}

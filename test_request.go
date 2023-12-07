@@ -2,7 +2,9 @@ package autopilot
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -22,7 +24,7 @@ func (t *TestRequest) ResponseAsString() string {
 func NewTestRequest(request string, variables string, response string) TestRequest {
 	testRequest := TestRequest{
 		Request: GraphqlQuery{
-			Query:     request,
+			Query:     templatedString(request),
 			Variables: templatedJson(variables),
 		},
 		Response: templatedJson(response),
@@ -41,6 +43,14 @@ func templatedJson(values string) map[string]any {
 	}
 
 	return valuesJSON
+}
+
+func templatedString(contents string) string {
+	data, err := Templater.ParseToBytes(contents)
+	if err != nil {
+		panic(fmt.Errorf("error parsing template: %s", err))
+	}
+	return strings.TrimSpace(data.String())
 }
 
 func TestRequestResponse(testRequest TestRequest) ResponseWriter {
