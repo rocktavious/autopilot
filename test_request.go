@@ -9,6 +9,14 @@ type TestRequest struct {
 	Response map[string]any
 }
 
+func (t *TestRequest) ResponseAsString() string {
+	marshalledResponse, err := json.Marshal(t.Response)
+	if err != nil {
+		panic(err)
+	}
+	return string(marshalledResponse)
+}
+
 func NewTestRequest(request string, variables string, response string) TestRequest {
 	testRequest := TestRequest{
 		Request: GraphqlQuery{

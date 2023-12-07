@@ -72,6 +72,10 @@ func EmptyResponse() ResponseWriter {
 	}
 }
 
+func TestRequestResponse(testRequest TestRequest) ResponseWriter {
+	return JsonStringResponse(testRequest.ResponseAsString())
+}
+
 func JsonStringResponse(jsonString string) ResponseWriter {
 	if !json.Valid([]byte(jsonString)) {
 		panic(fmt.Errorf("invalid json passed to JsonStringResponse(): %s", jsonString))
