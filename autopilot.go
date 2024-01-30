@@ -162,10 +162,12 @@ func Assert(tb testing.TB, condition bool, msg string, v ...interface{}) {
 }
 
 // Ok fails the test if an err is not nil.
-func Ok(tb testing.TB, err error) {
-	if err != nil {
-		tb.Helper()
-		tb.Fatalf("\n\tunexpected error: %s", err.Error())
+func Ok(tb testing.TB, errors ...error) {
+	for _, err := range errors {
+		if err != nil {
+			tb.Helper()
+			tb.Fatalf("\n\tunexpected error: %s", err.Error())
+		}
 	}
 }
 
